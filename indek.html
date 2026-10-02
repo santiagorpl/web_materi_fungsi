@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projek Website Pembelajaran Matematika</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom styling for Math Canvas */
+        .geogebra-canvas {
+            background-color: #ffffff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+            border-radius: 0.75rem;
+        }
+        .active-tab {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50">
+
+    <!-- SIDEBAR / NAVIGATION DASHBOARD -->
+    <aside class="w-full md:w-80 bg-slate-900 text-slate-100 flex flex-col justify-between shadow-xl z-20">
+        <div>
+            <!-- Header Logo -->
+            <div class="p-5 border-b border-slate-800 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid font-bold fa-square-root-variable"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base leading-tight">Web Pembelajaran</h1>
+                    <p class="text-xs text-slate-400">Matematika Interaktif</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-2">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Modul Pembelajaran</p>
+                
+                <button onclick="switchTab('kb1')" id="nav-kb1" class="tab-btn active-tab w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition duration-200">
+                    <i class="fa-solid fa-chart-line w-5 text-center text-blue-400"></i>
+                    <div class="text-left">
+                        <div class="font-semibold">K.B. 1</div>
+                        <div class="text-xs opacity-80">Fungsi Linear & GeoGebra</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('kb2')" id="nav-kb2" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition duration-200">
+                    <i class="fa-solid fa-chart-area w-5 text-center text-emerald-400"></i>
+                    <div class="text-left">
+                        <div class="font-semibold">K.B. 2</div>
+                        <div class="text-xs opacity-80">Fungsi Kuadrat</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('kb3')" id="nav-kb3" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition duration-200">
+                    <i class="fa-solid fa-calculator w-5 text-center text-amber-400"></i>
+                    <div class="text-left">
+                        <div class="font-semibold">K.B. 3</div>
+                        <div class="text-xs opacity-80">Komposisi & Invers Fungsi</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('kb4')" id="nav-kb4" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition duration-200">
+                    <i class="fa-solid fa-shapes w-5 text-center text-purple-400"></i>
+                    <div class="text-left">
+                        <div class="font-semibold">K.B. 4</div>
+                        <div class="text-xs opacity-80">Program Linear</div>
+                    </div>
+                </button>
+
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 pt-4 mb-2">Informasi</p>
+
+                <button onclick="switchTab('profil')" id="nav-profil" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 transition duration-200">
+                    <i class="fa-solid fa-id-card w-5 text-center text-rose-400"></i>
+                    <div class="text-left">
+                        <div class="font-semibold">Profil Pengembang</div>
+                        <div class="text-xs opacity-80">Tim Penyusun & Projek</div>
+                    </div>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            Projek ASLS Matematika &copy; 2026
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto flex flex-col min-w-0">
+        <!-- Top App Bar -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h2 id="top-title" class="text-xl font-bold text-slate-800">K.B. 1: Fungsi Linear</h2>
+                <p id="top-subtitle" class="text-xs text-slate-500">Visualisasi Grafik Interaktif Gaya GeoGebra</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="bg-blue-50 text-blue-700 text-xs px-3 py-1.5 rounded-full font-semibold border border-blue-200">
+                    <i class="fa-solid fa-circle-play mr-1"></i> Mode Interaktif
+                </span>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Sections -->
+        <div class="p-6 flex-1">
+            
+            <!-- MODUL KB 1: FUNGSI LINEAR -->
+            <section id="content-kb1" class="tab-content block space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Controls Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-blue-600"></i> Parameter Fungsi Linear
+                            </h3>
+                            <p class="text-xs text-slate-500">Bentuk Umum: f(x) = ax + b</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Koefisien a (Gradien)</label>
+                            <input type="number" id="kb1-a" value="1" step="0.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="renderLinearCanvas()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Konstanta b (Titik Potong Y)</label>
+                            <input type="number" id="kb1-b" value="3" step="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="renderLinearCanvas()">
+                        </div>
+
+                        <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                            <div class="text-xs text-blue-800 font-medium">Persamaan Terbentuk:</div>
+                            <div id="kb1-equation" class="text-lg font-bold text-blue-900 mt-1">f(x) = x + 3</div>
+                        </div>
+
+                        <div class="text-xs text-slate-500 space-y-2 pt-2 border-t border-slate-100">
+                            <p><i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> <b>Fungsi linear</b> membentuk garis lurus pada bidang Kartesius.</p>
+                            <p>• a menentukan kemiringan garis (gradien).</p>
+                            <p>• b menentukan lokasi perpotongan sumbu Y.</p>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Visualization Area -->
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-draw-polygon text-blue-600"></i> Simulasi Visual (GeoGebra Grid Style)
+                            </h3>
+                            <button onclick="renderLinearCanvas()" class="text-xs px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-medium">
+                                <i class="fa-solid fa-rotate mr-1"></i> Reset Zoom
+                            </button>
+                        </div>
+                        <div class="relative w-full aspect-video min-h-[350px] bg-slate-50 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center">
+                            <canvas id="canvas-kb1" class="w-full h-full geogebra-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL KB 2: FUNGSI KUADRAT -->
+            <section id="content-kb2" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Controls Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-emerald-600"></i> Parameter Fungsi Kuadrat
+                            </h3>
+                            <p class="text-xs text-slate-500">Bentuk Umum: f(x) = ax² + bx + c</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koefisien a ($x^2$)</label>
+                            <input type="number" id="kb2-a" value="1" step="0.5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none" oninput="renderQuadraticCanvas()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Koefisien b ($x$)</label>
+                            <input type="number" id="kb2-b" value="0" step="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none" oninput="renderQuadraticCanvas()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Konstanta c</label>
+                            <input type="number" id="kb2-c" value="5" step="1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none" oninput="renderQuadraticCanvas()">
+                        </div>
+
+                        <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                            <div class="text-xs text-emerald-800 font-medium">Persamaan Terbentuk:</div>
+                            <div id="kb2-equation" class="text-lg font-bold text-emerald-900 mt-1">f(x) = x² + 5</div>
+                        </div>
+
+                        <div id="kb2-info-vertex" class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            Titik Puncak: (0, 5)
+                        </div>
+                    </div>
+
+                    <!-- Canvas Visualization Area -->
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-area text-emerald-600"></i> Visualisasi Kurva Parabola
+                            </h3>
+                        </div>
+                        <div class="relative w-full aspect-video min-h-[350px] bg-slate-50 rounded-xl overflow-hidden border border-slate-200">
+                            <canvas id="canvas-kb2" class="w-full h-full geogebra-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL KB 3: KOMPOSISI & INVERS FUNGSI -->
+            <section id="content-kb3" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Preset Inputs -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-amber-600"></i> Input Fungsi Dasarnya
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Fungsi f(x) = a x + b</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="func-f-a" value="1" placeholder="a" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                                <input type="number" id="func-f-b" value="3" placeholder="b" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                            </div>
+                            <span class="text-xs text-slate-400 mt-1 block">Tersimpan: <b id="disp-f">f(x) = x + 3</b></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Fungsi g(x) = a x + b</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="func-g-a" value="4" placeholder="a" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                                <input type="number" id="func-g-b" value="5" placeholder="b" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                            </div>
+                            <span class="text-xs text-slate-400 mt-1 block">Tersimpan: <b id="disp-g">g(x) = 4x + 5</b></span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Fungsi h(x) = a x + b</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="func-h-a" value="3" placeholder="a" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                                <input type="number" id="func-h-b" value="-9" placeholder="b" class="px-3 py-1.5 border rounded-lg text-sm" onchange="updateCalc()">
+                            </div>
+                            <span class="text-xs text-slate-400 mt-1 block">Tersimpan: <b id="disp-h">h(x) = 3x - 9</b></span>
+                        </div>
+
+                        <div class="pt-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Substitusi Nilai x</label>
+                            <input type="number" id="eval-x" value="2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 outline-none" oninput="updateCalc()">
+                        </div>
+                    </div>
+
+                    <!-- Calculator Operational Dashboard -->
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-calculator text-amber-600"></i> Hasil Komposisi & Invers Fungsi
+                            </h3>
+                            <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-full">Kalkulator Otomatis</span>
+                        </div>
+
+                        <!-- Results Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- fog -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(f ∘ g)(x)</div>
+                                <div id="res-fog" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-fog" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- gof -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(g ∘ f)(x)</div>
+                                <div id="res-gof" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-gof" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- foh -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(f ∘ h)(x)</div>
+                                <div id="res-foh" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-foh" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- hof -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(h ∘ f)(x)</div>
+                                <div id="res-hof" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-hof" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- goh -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(g ∘ h)(x)</div>
+                                <div id="res-goh" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-goh" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- hog -->
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="text-xs text-slate-500 font-medium">(h ∘ g)(x)</div>
+                                <div id="res-hog" class="font-bold text-amber-700 text-sm mt-1">-</div>
+                                <div id="eval-hog" class="text-xs text-slate-400 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- fogoh -->
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl col-span-1 sm:col-span-1">
+                                <div class="text-xs text-amber-800 font-medium">(f ∘ g ∘ h)(x)</div>
+                                <div id="res-fogoh" class="font-bold text-amber-900 text-sm mt-1">-</div>
+                                <div id="eval-fogoh" class="text-xs text-amber-600 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- fahog / f o h o g -->
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl col-span-1 sm:col-span-1">
+                                <div class="text-xs text-amber-800 font-medium">(f ∘ h ∘ g)(x)</div>
+                                <div id="res-fahog" class="font-bold text-amber-900 text-sm mt-1">-</div>
+                                <div id="eval-fahog" class="text-xs text-amber-600 mt-0.5">Nilai: -</div>
+                            </div>
+
+                            <!-- gofoh -->
+                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl col-span-1 sm:col-span-1">
+                                <div class="text-xs text-amber-800 font-medium">(g ∘ f ∘ h)(x)</div>
+                                <div id="res-gofoh" class="font-bold text-amber-900 text-sm mt-1">-</div>
+                                <div id="eval-gofoh" class="text-xs text-amber-600 mt-0.5">Nilai: -</div>
+                            </div>
+                        </div>
+
+                        <!-- Invers / Turunan Section -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-600 uppercase mb-3">Invers Fungsi Linear</h4>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                                    <span class="text-xs text-blue-700 font-semibold block">f⁻¹(x)</span>
+                                    <span id="res-inv-f" class="font-bold text-blue-900 text-xs mt-1 block">-</span>
+                                </div>
+                                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                                    <span class="text-xs text-blue-700 font-semibold block">g⁻¹(x)</span>
+                                    <span id="res-inv-g" class="font-bold text-blue-900 text-xs mt-1 block">-</span>
+                                </div>
+                                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                                    <span class="text-xs text-blue-700 font-semibold block">h⁻¹(x)</span>
+                                    <span id="res-inv-h" class="font-bold text-blue-900 text-xs mt-1 block">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL KB 4: PROGRAM LINEAR -->
+            <section id="content-kb4" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">Pertidaksamaan Linear & Daerah Penyelesaian</h3>
+                        <p class="text-xs text-slate-500">Simulasi menemukan Daerah Himpunan Penyelesaian (DHP) dari sistem pertidaksamaan linear.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase">Sistem Pertidaksamaan</h4>
+                            
+                            <div class="p-3 bg-white border border-purple-200 rounded-lg text-sm">
+                                <span class="font-semibold text-purple-700">Garis 1:</span> 2x + y ≤ 8
+                            </div>
+
+                            <div class="p-3 bg-white border border-blue-200 rounded-lg text-sm">
+                                <span class="font-semibold text-blue-700">Garis 2:</span> x + 2y ≤ 10
+                            </div>
+
+                            <div class="p-3 bg-white border border-slate-200 rounded-lg text-xs text-slate-600">
+                                Syarat Non-Negatif: x ≥ 0, y ≥ 0
+                            </div>
+
+                            <div class="p-3 bg-purple-50 rounded-lg text-xs text-purple-900">
+                                <b>Fungsi Objektif Z:</b> Maksimumkan Z = 3x + 4y
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2 flex flex-col justify-center items-center bg-slate-900 rounded-xl p-4 min-h-[300px]">
+                            <canvas id="canvas-kb4" class="w-full h-64 bg-slate-900 rounded-lg"></canvas>
+                            <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-circle text-purple-400 mr-1"></i> Area yang diarsir merupakan Daerah Himpunan Penyelesaian (DHP)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL PROFIL PENGEMBANG -->
+            <section id="content-profil" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-4xl mx-auto space-y-6">
+                    <div class="text-center border-b border-slate-100 pb-6">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full mx-auto flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-blue-500/30 mb-3">
+                            ST
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Profil Pengembang</h3>
+                        <p class="text-xs text-slate-500 mt-1">Projek Website Pembelajaran Matematika</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/50">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">ST</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800">Santiago Tan</h4>
+                                    <p class="text-xs text-slate-500">Pengembang Website</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-700">Sekolah:</span> SMK Bagimu Negeriku Semarang</p>
+                                <p><span class="font-semibold text-slate-700">Jurusan:</span> Rekayasa Perangkat Lunak (RPL)</p>
+                                <p><span class="font-semibold text-slate-700">Bidang:</span> Web Development & Game Development</p>
+                            </div>
+                        </div>
+
+                        <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/50">
+                            <h4 class="font-bold text-slate-800 mb-3">Peran dalam Projek</h4>
+                            <ul class="text-sm text-slate-600 space-y-2">
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>Membangun struktur website pembelajaran.</span></li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>Membuat interaksi dan kalkulator matematika dengan JavaScript.</span></li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>Membuat visualisasi grafik menggunakan HTML Canvas.</span></li>
+                                <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>Menyusun tampilan antarmuka agar mudah digunakan.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-100 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase mb-2">Teknologi yang Digunakan</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">HTML</span>
+                            <span class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">CSS</span>
+                            <span class="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">JavaScript</span>
+                            <span class="px-3 py-1.5 bg-cyan-100 text-cyan-700 rounded-full text-xs font-semibold">Tailwind CSS</span>
+                            <span class="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-full text-xs font-semibold">HTML Canvas</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 text-center">
+                        <p class="text-sm text-blue-900">Website ini dibuat sebagai prototipe pembelajaran matematika interaktif untuk membantu memahami fungsi linear, fungsi kuadrat, komposisi dan invers fungsi, serta program linear.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // --- TAB NAVIGATION SYSTEM ---
+        const tabTitles = {
+            'kb1': { title: 'K.B. 1: Fungsi Linear', subtitle: 'Visualisasi Grafik Interaktif Gaya GeoGebra' },
+            'kb2': { title: 'K.B. 2: Fungsi Kuadrat', subtitle: 'Simulasi Parabola dan Titik Puncak' },
+            'kb3': { title: 'K.B. 3: Komposisi & Invers Fungsi', subtitle: 'Kalkulator Komposisi fog, gof, foh, fahog, dll.' },
+            'kb4': { title: 'K.B. 4: Program Linear', subtitle: 'Daerah Himpunan Penyelesaian Pertidaksamaan' },
+            'profil': { title: 'Profil Pengembang', subtitle: 'Tim & Laporan Draft Projek ASLS' }
+        };
+
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active classes
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+
+            // Show selected tab & activate button
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('active-tab');
+
+            // Update Header
+            if (tabTitles[tabId]) {
+                document.getElementById('top-title').innerText = tabTitles[tabId].title;
+                document.getElementById('top-subtitle').innerText = tabTitles[tabId].subtitle;
+            }
+
+            // Trigger Canvas Resizing/Rerendering
+            if (tabId === 'kb1') setTimeout(renderLinearCanvas, 50);
+            if (tabId === 'kb2') setTimeout(renderQuadraticCanvas, 50);
+            if (tabId === 'kb4') setTimeout(renderProgramLinearCanvas, 50);
+        }
+
+        // --- GEOGEBRA GRID CANVAS RENDERER (HELPER) ---
+        function drawCartesianGrid(ctx, width, height, scale = 30) {
+            ctx.clearRect(0, 0, width, height);
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Grid Lines
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+
+            for (let x = centerX % scale; x < width; x += scale) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            for (let y = centerY % scale; y < height; y += scale) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Axis Lines (X & Y Axis)
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+
+            // X Axis
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+
+            // Y Axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.stroke();
+
+            // Label koordinat sederhana
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px Inter';
+            ctx.textAlign = 'center';
+            for (let value = -Math.ceil(centerX / scale); value <= Math.floor(centerX / scale); value++) {
+                if (value !== 0) ctx.fillText(value, centerX + value * scale, centerY + 14);
+            }
+            ctx.textAlign = 'right';
+            for (let value = -Math.ceil(centerY / scale); value <= Math.floor(centerY / scale); value++) {
+                if (value !== 0) ctx.fillText(value, centerX - 6, centerY - value * scale + 4);
+            }
+            ctx.textAlign = 'left';
+            ctx.fillText('X', width - 12, centerY - 6);
+            ctx.fillText('Y', centerX + 6, 14);
+
+            return { centerX, centerY, scale };
+        }
+
+        // --- KB 1: FUNGSI LINEAR CANVAS ---
+        function renderLinearCanvas() {
+            const canvas = document.getElementById('canvas-kb1');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            const ctx = canvas.getContext('2d');
+            const a = parseFloat(document.getElementById('kb1-a').value) || 0;
+            const b = parseFloat(document.getElementById('kb1-b').value) || 0;
+
+            // Update Equation Text
+            const signB = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+            document.getElementById('kb1-equation').innerText = `f(x) = ${a === 1 ? '' : a === -1 ? '-' : a}x ${signB}`;
+
+            const { centerX, centerY, scale } = drawCartesianGrid(ctx, canvas.width, canvas.height, 35);
+
+            // Draw Linear Line
+            ctx.beginPath();
+            ctx.strokeStyle = '#2563eb'; // Blue Line
+            ctx.lineWidth = 3;
+
+            const xStart = -15;
+            const xEnd = 15;
+
+            const yStart = a * xStart + b;
+            const yEnd = a * xEnd + b;
+
+            ctx.moveTo(centerX + xStart * scale, centerY - yStart * scale);
+            ctx.lineTo(centerX + xEnd * scale, centerY - yEnd * scale);
+            ctx.stroke();
+
+            // Draw Y Intercept Point
+            ctx.fillStyle = '#dc2626';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - b * scale, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // --- KB 2: FUNGSI KUADRAT CANVAS ---
+        function renderQuadraticCanvas() {
+            const canvas = document.getElementById('canvas-kb2');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = Math.max(300, rect.width);
+            canvas.height = Math.max(300, rect.height);
+
+            const ctx = canvas.getContext('2d');
+            const a = parseFloat(document.getElementById('kb2-a').value) || 0;
+            const b = parseFloat(document.getElementById('kb2-b').value) || 0;
+            const c = parseFloat(document.getElementById('kb2-c').value) || 0;
+
+            const bStr = b !== 0 ? (b > 0 ? `+ ${b}x` : `- ${Math.abs(b)}x`) : '';
+            const cStr = c !== 0 ? (c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`) : '';
+            const aStr = a === 1 ? '' : a === -1 ? '-' : a;
+            document.getElementById('kb2-equation').innerText = `f(x) = ${aStr}x² ${bStr} ${cStr}`.replace(/\s+/g, ' ').trim();
+
+            if (a === 0) {
+                document.getElementById('kb2-info-vertex').innerText = 'Koefisien a tidak boleh 0 karena fungsi ini harus berbentuk fungsi kuadrat.';
+                drawCartesianGrid(ctx, canvas.width, canvas.height, 25);
+                ctx.beginPath();
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+                const scale = 25;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const xStart = -centerX / scale;
+                const xEnd = centerX / scale;
+                ctx.moveTo(centerX + xStart * scale, centerY - (b * xStart + c) * scale);
+                ctx.lineTo(centerX + xEnd * scale, centerY - (b * xEnd + c) * scale);
+                ctx.stroke();
+                return;
+            }
+
+            const vx = -b / (2 * a);
+            const vy = a * vx * vx + b * vx + c;
+            document.getElementById('kb2-info-vertex').innerText = `Titik Puncak: (${vx.toFixed(1)}, ${vy.toFixed(1)})`;
+
+            const { centerX, centerY, scale } = drawCartesianGrid(ctx, canvas.width, canvas.height, 25);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+
+            let isFirst = true;
+            for (let px = -centerX; px <= centerX; px += 1) {
+                const x = px / scale;
+                const y = a * x * x + b * x + c;
+                const canvasX = centerX + px;
+                const canvasY = centerY - y * scale;
+
+                if (isFirst) {
+                    ctx.moveTo(canvasX, canvasY);
+                    isFirst = false;
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+
+            if (Number.isFinite(vx) && Number.isFinite(vy)) {
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(centerX + vx * scale, centerY - vy * scale, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // --- KB 3: KALKULATOR KOMPOSISI & INVERS FUNGSI ---
+        function updateCalc() {
+            // Get inputs
+            const fa = parseFloat(document.getElementById('func-f-a').value) || 0;
+            const fb = parseFloat(document.getElementById('func-f-b').value) || 0;
+
+            const ga = parseFloat(document.getElementById('func-g-a').value) || 0;
+            const gb = parseFloat(document.getElementById('func-g-b').value) || 0;
+
+            const ha = parseFloat(document.getElementById('func-h-a').value) || 0;
+            const hb = parseFloat(document.getElementById('func-h-b').value) || 0;
+
+            const xVal = parseFloat(document.getElementById('eval-x').value) || 0;
+
+            // Display linear function equations
+            document.getElementById('disp-f').innerText = `f(x) = ${fa}x ${fb >= 0 ? '+' : ''}${fb}`;
+            document.getElementById('disp-g').innerText = `g(x) = ${ga}x ${gb >= 0 ? '+' : ''}${gb}`;
+            document.getElementById('disp-h').innerText = `h(x) = ${ha}x ${hb >= 0 ? '+' : ''}${hb}`;
+
+            // Helper format: Linear composition A*x + B
+            function compose(a1, b1, a2, b2) {
+                return { a: a1 * a2, b: a1 * b2 + b1 };
+            }
+
+            function fmt(comp) {
+                const bSign = comp.b >= 0 ? `+ ${comp.b}` : `- ${Math.abs(comp.b)}`;
+                return `${comp.a}x ${bSign}`;
+            }
+
+            function evaluate(comp, x) {
+                return comp.a * x + comp.b;
+            }
+
+            // Single Compositions
+            const fog = compose(fa, fb, ga, gb);
+            const gof = compose(ga, gb, fa, fb);
+            const foh = compose(fa, fb, ha, hb);
+            const hof = compose(ha, hb, fa, fb);
+            const goh = compose(ga, gb, ha, hb);
+            const hog = compose(ha, hb, ga, gb);
+
+            // Triple Compositions
+            const fogoh = compose(fog.a, fog.b, ha, hb);
+            const fahog = compose(foh.a, foh.b, ga, gb); // f o h o g
+            const gofoh = compose(gof.a, gof.b, ha, hb);
+
+            // Set Output Text
+            document.getElementById('res-fog').innerText = fmt(fog);
+            document.getElementById('eval-fog').innerText = `Nilai: ${evaluate(fog, xVal)}`;
+
+            document.getElementById('res-gof').innerText = fmt(gof);
+            document.getElementById('eval-gof').innerText = `Nilai: ${evaluate(gof, xVal)}`;
+
+            document.getElementById('res-foh').innerText = fmt(foh);
+            document.getElementById('eval-foh').innerText = `Nilai: ${evaluate(foh, xVal)}`;
+
+            document.getElementById('res-hof').innerText = fmt(hof);
+            document.getElementById('eval-hof').innerText = `Nilai: ${evaluate(hof, xVal)}`;
+
+            document.getElementById('res-goh').innerText = fmt(goh);
+            document.getElementById('eval-goh').innerText = `Nilai: ${evaluate(goh, xVal)}`;
+
+            document.getElementById('res-hog').innerText = fmt(hog);
+            document.getElementById('eval-hog').innerText = `Nilai: ${evaluate(hog, xVal)}`;
+
+            document.getElementById('res-fogoh').innerText = fmt(fogoh);
+            document.getElementById('eval-fogoh').innerText = `Nilai: ${evaluate(fogoh, xVal)}`;
+
+            document.getElementById('res-fahog').innerText = fmt(fahog);
+            document.getElementById('eval-fahog').innerText = `Nilai: ${evaluate(fahog, xVal)}`;
+
+            document.getElementById('res-gofoh').innerText = fmt(gofoh);
+            document.getElementById('eval-gofoh').innerText = `Nilai: ${evaluate(gofoh, xVal)}`;
+
+            // Invers fungsi linear. Syarat fungsi memiliki invers: koefisien a tidak boleh 0.
+            const inverseText = (a, b) => {
+                if (a === 0) return 'Tidak memiliki invers linear';
+                const sign = -b >= 0 ? '+' : '-';
+                return `(x ${sign} ${Math.abs(b)}) / ${a}`;
+            };
+
+            document.getElementById('res-inv-f').innerText = inverseText(fa, fb);
+            document.getElementById('res-inv-g').innerText = inverseText(ga, gb);
+            document.getElementById('res-inv-h').innerText = inverseText(ha, hb);
+        }
+
+        // --- KB 4: PROGRAM LINEAR CANVAS ---
+        function renderProgramLinearCanvas() {
+            const canvas = document.getElementById('canvas-kb4');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = Math.max(300, rect.width);
+            canvas.height = Math.max(260, rect.height);
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = 22;
+            const ox = 40;
+            const oy = canvas.height - 30;
+
+            // Draw Grid Axis
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1.5;
+
+            // X Axis
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(canvas.width - 20, oy);
+            ctx.stroke();
+
+            // Y Axis
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(ox, 20);
+            ctx.stroke();
+
+            // Region DHP Polygon Points: (0,0), (4,0), (2,4), (0,5)
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.35)'; // Purple shade
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(ox + 4 * scale, oy); // (4,0)
+            ctx.lineTo(ox + 2 * scale, oy - 4 * scale); // (2,4)
+            ctx.lineTo(ox, oy - 5 * scale); // (0,5)
+            ctx.closePath();
+            ctx.fill();
+
+            // Line 1: 2x + y = 8 -> (0,8) to (4,0)
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(ox, oy - 8 * scale);
+            ctx.lineTo(ox + 4 * scale, oy);
+            ctx.stroke();
+
+            // Line 2: x + 2y = 10 -> (0,5) to (10,0)
+            ctx.strokeStyle = '#60a5fa';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(ox, oy - 5 * scale);
+            ctx.lineTo(ox + 10 * scale, oy);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Inter';
+            ctx.fillText('DHP', ox + 1.2 * scale, oy - 1.8 * scale);
+            ctx.fillText('(2,4)', ox + 2.2 * scale, oy - 4.2 * scale);
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            updateCalc();
+            renderLinearCanvas();
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                renderLinearCanvas();
+                renderQuadraticCanvas();
+                renderProgramLinearCanvas();
+            });
+        };
+    </script>
+</body>
+</html>
